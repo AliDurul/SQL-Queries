@@ -7,6 +7,16 @@ import { getRandomInterviewCover } from "@/lib/utils";
 export async function POST(request: Request) {
   const { type, role, level, techstack, amount, userid } = await request.json();
 
+  console.log("Request Body:", { type, role, level, techstack, amount, userid });
+
+    // Validate input
+    if (!type || !role || !level || !techstack || !amount || !userid) {
+      return Response.json(
+        { success: false, error: "Missing required fields in the request body" },
+        { status: 400 }
+      );
+    }
+
   try {
     const { text: questions } = await generateText({
       model: google("gemini-2.0-flash-001"),
@@ -29,7 +39,7 @@ export async function POST(request: Request) {
       role: role,
       type: type,
       level: level,
-      techstack: techstack.split(","),
+      techstack: techstack ? techstack.split(",") : [],
       questions: JSON.parse(questions),
       userId: userid,
       finalized: true,
