@@ -37,7 +37,8 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString(),
     };
 
-    await db.collection("interviews").add(interview);
+    const resFirebase = await db.collection("interviews").add(interview);
+    console.log('resFirebase', resFirebase);
 
     return Response.json({ success: true }, { status: 200 });
   } catch (error) {
