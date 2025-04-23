@@ -10,12 +10,7 @@ export async function createFeedback(params: CreateFeedbackParams) {
   const { interviewId, userId, transcript, feedbackId } = params;
 
   try {
-    const formattedTranscript = transcript
-      .map(
-        (sentence: { role: string; content: string }) =>
-          `- ${sentence.role}: ${sentence.content}\n`
-      )
-      .join("");
+    const formattedTranscript = transcript.map((sentence: { role: string; content: string }) => `- ${sentence.role}: ${sentence.content}\n`).join("");
 
     const { object } = await generateObject({
       model: google("gemini-2.0-flash-001", {
@@ -34,8 +29,7 @@ export async function createFeedback(params: CreateFeedbackParams) {
         - **Cultural & Role Fit**: Alignment with company values and job role.
         - **Confidence & Clarity**: Confidence in responses, engagement, and clarity.
         `,
-      system:
-        "You are a professional interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories",
+      system: "You are a professional interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories",
     });
 
     const feedback = {
@@ -72,9 +66,7 @@ export async function getInterviewById(id: string): Promise<Interview | null> {
   return interview.data() as Interview | null;
 }
 
-export async function getFeedbackByInterviewId(
-  params: GetFeedbackByInterviewIdParams
-): Promise<Feedback | null> {
+export async function getFeedbackByInterviewId(params: GetFeedbackByInterviewIdParams): Promise<Feedback | null> {
   const { interviewId, userId } = params;
 
   const querySnapshot = await db
