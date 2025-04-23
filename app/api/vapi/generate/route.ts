@@ -5,12 +5,12 @@ import { db } from "@/firebase/admin";
 import { getRandomInterviewCover } from "@/lib/utils";
 
 export async function POST(request: Request) {
-  const { type, role, level, techstack, amount, userid } = await request.json();
+  const { type, role, level, techstacks, amount, userid } = await request.json();
 
-  console.log("Request Body:", { type, role, level, techstack, amount, userid });
+  console.log("Request Body:", { type, role, level, techstacks, amount, userid });
 
     // Validate input
-    if (!type || !role || !level || !techstack || !amount || !userid) {
+    if (!type || !role || !level || !techstacks || !amount || !userid) {
       return Response.json(
         { success: false, error: "Missing required fields in the request body" },
         { status: 400 }
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       prompt: `Prepare questions for a job interview.
         The job role is ${role}.
         The job experience level is ${level}.
-        The tech stack used in the job is: ${techstack}.
+        The tech stack used in the job is: ${techstacks}.
         The focus between behavioural and technical questions should lean towards: ${type}.
         The amount of questions required is: ${amount}.
         Please return only the questions, without any additional text.
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       role: role,
       type: type,
       level: level,
-      techstack: techstack ? techstack.split(",") : [],
+      techstack: techstacks ? techstacks.split(",") : [],
       questions: JSON.parse(questions),
       userId: userid,
       finalized: true,
