@@ -9,13 +9,24 @@ export async function POST(request: Request) {
 
   console.log("Request Body:", { type, role, level, techstacks, amount, userid });
 
-    // Validate input
-    // if (!type || !role || !level || !techstacks || !amount || !userid) {
-    //   return Response.json(
-    //     { success: false, error: "Missing required fields in the request body" },
-    //     { status: 400 }
-    //   );
-    // }
+  // Validate input
+  if (!type || !role || !level || !techstacks || !amount || !userid) {
+    return Response.json(
+      { success: false, error: "Missing required fields in the request body" },
+      { status: 400 }
+    );
+  }
+
+  // Normalize and convert techstacks to an array of languages
+  const techstackArray = techstacks
+    ? techstacks
+      .replace(/,/g, " ") // Replace commas with spaces
+      .toLowerCase() // Convert to lowercase for consistent filtering
+      .split(" ") // Split into words
+      .filter((word: string) => word && !["and", "the"].includes(word)) // Remove unwanted words
+      .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
+    : [];
+
 
   try {
     const { text: questions } = await generateText({
@@ -23,7 +34,7 @@ export async function POST(request: Request) {
       prompt: `Prepare questions for a job interview.
         The job role is ${role}.
         The job experience level is ${level}.
-        The tech stack used in the job is: ${techstacks}.
+        The tech stack used in the job is: ${techstackArray.join(", ")}.
         The focus between behavioural and technical questions should lean towards: ${type}.
         The amount of questions required is: ${amount}.
         Please return only the questions, without any additional text.
@@ -39,7 +50,7 @@ export async function POST(request: Request) {
       role: role,
       type: type,
       level: level,
-      techstack: techstacks ? techstacks.split(" ") : [],
+      techstack: techstackArray,
       questions: JSON.parse(questions),
       userId: userid,
       finalized: true,

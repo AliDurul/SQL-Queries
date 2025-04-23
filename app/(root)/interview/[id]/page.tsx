@@ -4,10 +4,7 @@ import { redirect } from "next/navigation";
 import Agent from "@/components/Agent";
 import { getRandomInterviewCover } from "@/lib/utils";
 
-import {
-  getFeedbackByInterviewId,
-  getInterviewById,
-} from "@/lib/actions/general.action";
+import { getFeedbackByInterviewId, getInterviewById } from "@/lib/actions/general.action";
 import { getCurrentUser } from "@/lib/actions/auth.action";
 import DisplayTechIcons from "@/components/DisplayTechIcons";
 
@@ -21,7 +18,7 @@ const InterviewDetails = async ({ params }: RouteParams) => {
 
   const feedback = await getFeedbackByInterviewId({
     interviewId: id,
-    userId: user?.id!,
+    userId: user?.id ?? "",
   });
 
   return (
@@ -48,7 +45,7 @@ const InterviewDetails = async ({ params }: RouteParams) => {
       </div>
 
       <Agent
-        userName={user?.name!}
+        userName={user?.name || "Guest"}
         userId={user?.id}
         interviewId={id}
         type="interview"
