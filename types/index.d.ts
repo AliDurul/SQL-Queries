@@ -36,6 +36,7 @@ interface User {
   name: string;
   email: string;
   id: string;
+  profileURL?: string;
 }
 
 interface InterviewCardProps {
